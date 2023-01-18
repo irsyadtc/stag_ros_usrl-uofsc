@@ -1,0 +1,29 @@
+<launch>
+   
+		<!-- marker -->
+  	<node name="marker_one" pkg="stag_ros" type="marker_one" output="screen">
+  	<param name="child_frame_id" value="STag_bundle_2" />
+  	</node>
+
+    <!--Run Camera -->
+    <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
+    <param name="video_device" value="/dev/video0" />	<!-- either /dev/video0 or /dev/video2 -->
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap"/>
+    <param name="camera_info_url" value="file://$(find single_fiducial)/config/asus_eb.yaml"/>
+    </node>
+    
+    <!--Start Stag Node-->
+    <node name="stag_node_camera_frame" pkg="stag_ros" type="stag_node_camera_frame"  output="screen" required="true">
+        <!-- Place the correct yaml file here-->
+        <rosparam command="load" file="$(find stag_ros)/cfg/bundle_2.yaml"/>
+        <!-- Place the correct bundle file here-->
+        <rosparam command="load" file="$(find stag_ros)/cfg/bundle_config_2_230117.yaml"/>
+    </node>
+
+    <!-- rviz -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find stag_ros)/rviz/stagNode_bundle.rviz" required="true"/>
+</launch>

@@ -1,0 +1,17 @@
+<launch>
+    <!--Play ROSbag file-->
+    <node name="rosbag" pkg="rosbag" type="play" args="$(find stag_ros)/bags/stag_home_xaxis_221214_7.bag"  required="true"/>
+    <!--Choice of stag_home_zaxis_221202_* files: -->
+    <!--#2 fast, #3 step by step, #4 slow, #5 fast 2 -->
+
+    <!--Start Stag Node-->
+    <node name="stag_node" pkg="stag_ros" type="stag_node" output="screen" required="true">
+        <!-- Place the correct yaml file here-->
+        <rosparam command="load" file="$(find stag_ros)/cfg/single.yaml"/>
+        <!-- Place the correct bundle file here-->
+        <rosparam command="load" file="$(find stag_ros)/cfg/single_config.yaml"/>
+        </node>
+
+    <!-- rviz -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find stag_ros)/cfg/single_home.rviz" required="true"/>
+</launch>

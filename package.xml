@@ -1,15 +1,14 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>stag_ros</name>
-  <version>0.3.9</version>
+  <version>0.4.0</version>
   <description>The stag_ros package</description>
 
   <url type="repository">https://github.com/usrl-uofsc/stag_ros</url>
   <url type="bugtracker">https://github.com/usrl-uofsc/stag_ros/issues</url>
   <url type="website">http://wiki.ros.org/stag_ros</url>
 
-  <maintainer email="bscain@email.sc.edu">Brennan Cain</maintainer>
-  <maintainer email="michailk@email.sc.edu">Michail Kalaitzakis</maintainer>
+  <maintainer email="irsyadtc89@gmail.com">Irsyad Sahalan</maintainer>
 
   <license>MIT</license>
  
@@ -25,6 +24,9 @@
   <build_depend>sensor_msgs</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>tf</build_depend>
+  <build_depend>tf2</build_depend>
+  <build_depend>tf2_ros</build_depend>
+  <build_depend>tf2_geometry_msgs</build_depend>
 
   <build_export_depend>camera_info_manager</build_export_depend>
   <build_export_depend>cv_bridge</build_export_depend>
@@ -35,6 +37,9 @@
   <build_export_depend>sensor_msgs</build_export_depend>
   <build_export_depend>std_msgs</build_export_depend>
   <build_export_depend>tf</build_export_depend>
+  <build_export_depend>tf2</build_export_depend>
+  <build_export_depend>tf2_ros</build_export_depend>
+  <build_export_depend>tf2_geometry_msgs</build_export_depend>
   
   <exec_depend>camera_info_manager</exec_depend>
   <exec_depend>cv_bridge</exec_depend>
@@ -46,6 +51,9 @@
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>tf</exec_depend>
+  <exec_depend>tf2</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>tf2_geometry_msgs</exec_depend>
 
   <export>
     <nodelet plugin="${prefix}/stag_nodelet.xml" />

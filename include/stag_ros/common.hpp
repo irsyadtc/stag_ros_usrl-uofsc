@@ -1,8 +1,7 @@
 /**
 MIT License
 
-Copyright (c) 2020 Brennan Cain (Unmanned Systems and Robotics Lab,
-University of South Carolina, USA)
+2023 Muhammad Irsyad Sahalan CAREM, Universiti Teknologi Petronas
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +26,7 @@ SOFTWARE.
 #include <vector>
 // #include <cv.hpp>
 #include <opencv2/opencv.hpp>
+
 
 namespace stag_ros {
 struct Common {
@@ -88,6 +88,62 @@ struct Common {
     }
     pub.publish(d_array);
   }
+  
+  /*******************************/
+  // publishTransformInverse
+  // swap default parent frame id with the child frame id
+  // inverse the transformation matrix
+  /*******************************/
+	  static void publishTransformInverse(const vector<tf::Transform> &tf,
+                               const ros::Publisher &pub,
+                               const std_msgs::Header &hdr,
+                               const string &tag_tf_prefix,
+                               const vector<string> &frame_id,
+                               const vector<int> &marker_id,
+                               const bool &pub_tf) {
+    stag_ros::STagMarkerArray d_array;
+    //use tfstamped directly
+    geometry_msgs::TransformStamped transformStamped;
+
+    for (size_t di = 0; di < tf.size(); ++di) {
+      if (pub_tf) {
+        static tf::TransformBroadcaster br;
+        //being swap here
+        tf::Transform inv_transform = tf[di].inverse();
+        //swap frame_id & child_frame_id
+        transformStamped.header.frame_id = tag_tf_prefix + frame_id[di];
+				transformStamped.child_frame_id = hdr.frame_id;
+				transformStamped.header.stamp = hdr.stamp;
+					
+				//invert x & y orientation		
+				transformStamped.transform.translation.x = -1*inv_transform.getOrigin().x();
+				transformStamped.transform.translation.y = -1*inv_transform.getOrigin().y();
+	   		transformStamped.transform.translation.z = inv_transform.getOrigin().z();
+	   		transformStamped.transform.rotation.x = -1*inv_transform.getRotation().x();
+				transformStamped.transform.rotation.y = -1*inv_transform.getRotation().y();
+				transformStamped.transform.rotation.z = inv_transform.getRotation().z();
+				transformStamped.transform.rotation.w = inv_transform.getRotation().w();
+        
+        br.sendTransform(transformStamped);	//swapped
+      }
+
+      stag_ros::STagMarker marker_msg;
+      marker_msg.id.data = marker_id[di];
+      marker_msg.header.stamp = hdr.stamp;
+      marker_msg.header.frame_id = frame_id[di];
+      marker_msg.pose.position.x = tf[di].getOrigin().x();
+      marker_msg.pose.position.y = tf[di].getOrigin().y();
+      marker_msg.pose.position.z = tf[di].getOrigin().z();
+      marker_msg.pose.orientation.x = tf[di].getRotation().x();
+      marker_msg.pose.orientation.y = tf[di].getRotation().y();
+      marker_msg.pose.orientation.z = tf[di].getRotation().z();
+      marker_msg.pose.orientation.w = tf[di].getRotation().w();
+      d_array.stag_array.push_back(marker_msg);
+    }
+    pub.publish(d_array);
+  }
+  
+  
 
   bool checkCoplanar(std::vector<cv::Point3d> worldP) {
     cv::Mat M = cv::Mat::zeros(3, worldP.size(), CV_64F);

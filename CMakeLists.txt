@@ -22,6 +22,9 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
   tf
+  tf2
+  tf2_ros
+  tf2_geometry_msgs
 )
 
 ## Custom message files to be created
@@ -39,8 +42,8 @@ generate_messages(
 
 catkin_package(
   INCLUDE_DIRS include src/stag
-  LIBRARIES stag_ros
-  CATKIN_DEPENDS camera_info_manager cv_bridge geometry_msgs image_transport message_generation message_runtime nodelet roscpp sensor_msgs std_msgs
+  LIBRARIES stag_ros_usrl-uofsc
+  CATKIN_DEPENDS camera_info_manager cv_bridge geometry_msgs image_transport message_generation message_runtime nodelet roscpp sensor_msgs std_msgs tf2 tf2_ros tf2_geometry_msgs
 )
 
 include_directories(
@@ -77,22 +80,48 @@ add_library(stag_core
 )
 
 add_library(stag_nodelet
-  src/stag_ros/stag_nodelet.cpp
-)
+  src/stag_ros/stag_nodelet.cpp)
 
 add_executable(stag_node
-  src/stag_ros/stag_node.cpp
-)
+  src/stag_ros/stag_node.cpp)
 
 add_executable(stag_nodelet_runnable
   src/stag_ros/stag_nodelet_main.cpp)
+  
+add_executable(stag_node_camera_frame
+  src/stag_ros/stag_node_camera_frame.cpp)
 
+add_executable(marker
+  src/stag_ros/marker.cpp)
+
+add_executable(marker_one
+  src/stag_ros/marker_one.cpp)
+
+add_executable(marker_two
+  src/stag_ros/marker_two.cpp)
+  
 ## Dependencies
 add_dependencies(stag_nodelet
   stag_ros_generate_messages_cpp
   ${catkin_EXPORTED_TARGETS}
 )
 add_dependencies(stag_node
+  stag_ros_generate_messages_cpp
+  ${catkin_EXPORTED_TARGETS}
+)
+add_dependencies(stag_node_camera_frame
+  stag_ros_generate_messages_cpp
+  ${catkin_EXPORTED_TARGETS}
+)
+add_dependencies(marker
+  stag_ros_generate_messages_cpp
+  ${catkin_EXPORTED_TARGETS}
+)
+add_dependencies(marker_one
+  stag_ros_generate_messages_cpp
+  ${catkin_EXPORTED_TARGETS}
+)
+add_dependencies(marker_two
   stag_ros_generate_messages_cpp
   ${catkin_EXPORTED_TARGETS}
 )
@@ -118,6 +147,22 @@ target_link_libraries(stag_node
   stag_core
 )
 
+target_link_libraries(stag_node_camera_frame
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
+  stag_core
+)
+
+target_link_libraries(marker
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(marker_one
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(marker_two
+  ${catkin_LIBRARIES}
+)
+
 ###########
 # INSTALL #
 ###########
@@ -132,6 +177,7 @@ install(DIRECTORY cfg launch
 
 install(TARGETS
   stag_node
+  stag_node_camera_frame
   stag_nodelet_runnable
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}

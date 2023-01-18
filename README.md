@@ -8,6 +8,9 @@ This package is developed independently from the creators of STag
 
 [Original STag source and marker generation script](https://github.com/bbenligiray/stag)
 
+Note:
+This had slight change of name (stag_ros_usrl-uofsc) from the original package name stag_ros
+
 ## Publications
 
 If you find this library useful, please cite our paper:
